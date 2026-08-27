@@ -41,3 +41,7 @@ This project will use the UrbanSound8k dataset. This dataset includes 8732 envir
 - Classification Accuracy
 - F1-score
 - Confusion Matrix
+
+## Project Documents
+
+[Project Proposal (PDF)](ELEC5305_Project_Proposal(Yunzhe%20Shao-530087661).pdf)
