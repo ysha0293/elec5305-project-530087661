@@ -1,7 +1,7 @@
 # Elec5305-project-530087661
 Student: Yunzhe Shao (SID: 530087661)
 
-GitHub Repository: https://github.com/ysha0293/elec5305-project-530087661
+GitHub: https://github.com/ysha0293/elec5305-project-530087661
 ## Environmental Sound Classification Using Audio Feature Extraction and Machine Learning
 This project studies the use of UrbanSound8k dataset for environmental sound classification.
 
