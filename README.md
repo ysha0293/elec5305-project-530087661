@@ -26,7 +26,9 @@ This project will use the UrbanSound8k dataset. This dataset includes 8732 envir
 - Siren
 - Street Music
 
-The dataset can be downloaded from the official [UrbanSound8K website](https://urbansounddataset.weebly.com/urbansound8k.html).
+The UrbanSound8K dataset can be downloaded from:
+
+[Download UrbanSound8K Dataset](https://zenodo.org/records/1203745)
 
   ## Methods
 
