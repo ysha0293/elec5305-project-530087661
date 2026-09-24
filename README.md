@@ -69,8 +69,8 @@ UrbanSound8K/
 │ └── fold10/
 │
 └── metadata/
-└── UrbanSound8K.csv
-` ` `
+    └── UrbanSound8K.csv
+```
 The original audio file of UrbanSound8K will not be uploaded to this GitHub.
 
 ---
