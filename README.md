@@ -119,7 +119,7 @@ The first system uses the traditional manual design of audio features.
 
 Current MFCC representation includes:
 
--MFCC coefficients;
+- MFCC coefficients;
 - First-order MFCC deltas;
 - Statistical summary based on the time dimension
 
