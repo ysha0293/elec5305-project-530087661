@@ -5,29 +5,76 @@ Student: Yunzhe Shao (SID: 530087661)
 
 **GitHub Pages:** [View Project Website](https://ysha0293.github.io/elec5305-project-530087661/)
 
-## Environmental Sound Classification Using Audio Feature Extraction and Machine Learning
-This project studies the use of UrbanSound8k dataset for environmental sound classification.
+## MFCCs versus Pretrained Audio Embeddings: Robustness of Environmental Sound Classification
+This project studies the classification of the environmental sound classification based on the Urbansound8K dataset
 
-This porject will mainly compare some audio feature extraction and classification methods. And it will compare the effect of different audio feature expression methods on the performance of environmental sound classification.
+This project initially focuses on comparing different audio features and machine learning methods by classification accuracy.
+
+Based on the project feedback one, The main research focus of the current project has been adjusted to:
+
+Study the robustness of different audio representation methods when the acoustic environment or recording conditions change.
+
+The current project mainly compares:
+- traditional MFCC features
+- pretrained YAMNet audio embedding
+
+These two representation methods are evaluated using a simple SVM classifier.
+
+The goal of this project only only compares the classification performance under the condition of clean data, and further studies how do noise, reverb and channel effects affect audio representation and final classification performance.
+
+---
+## Research question
+
+### main research probelm:
+**How robust are conventional MFCC features and pretrained deep audio embeddings to realistic acoustic and recording-channel perturbations in environmental sound classification?**
+### secondary question:
+**Can changes in the audio representation predict when classification performance will fail?**
+
 
 ## Dataset
 
-This project will use the UrbanSound8k dataset. This dataset includes 8732 environmental audio files and it has 10 categories.
+This project uses the UrbanSound8K dataset.
 
-- Air Conditioner
-- Car Horn
-- Children Playing
-- Dog Bark
-- Drilling
-- Engine Idling
-- Gun Shot
-- Jackhammer
-- Siren
-- Street Music
+UrbanSound8K includes:
 
-The UrbanSound8K dataset can be downloaded from:
+-8732 labeled audio segments;
+- 10 environmental sound categories;
+Each audio segment is approximately 4 seconds long.
+- 10 pre-defined official folds.
+
+The 10 categories are respectively:
+
+1. Air Conditioner
+2. Car Horn
+3. Children Playing
+4. Dog Bark
+5. Drilling
+6. Engine Idling
+7. Gun Shot
+8. Jackhammer
+9. Siren
+10. Street Music
+
+The UrbanSound8K dataset can be downloaded from Zenodo:
 
 [Download UrbanSound8K Dataset](https://zenodo.org/records/1203745)
+
+The expected directory structure of the dataset is as follows:
+```text
+UrbanSound8K/
+├── audio/
+│ ├── fold1/
+│ ├── fold2/
+│ ├──...
+│ └── fold10/
+│
+└── metadata/
+└── UrbanSound8K.csv
+` ` `
+The original audio file of UrbanSound8K will not be uploaded to this GitHub.
+
+---
+## The connection with ELEC 5305
 
   ## Methods
 
