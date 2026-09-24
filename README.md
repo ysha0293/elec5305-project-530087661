@@ -37,7 +37,7 @@ This project uses the UrbanSound8K dataset.
 
 UrbanSound8K includes:
 
--8732 labeled audio segments;
+- 8732 labeled audio segments;
 - 10 environmental sound categories;
 Each audio segment is approximately 4 seconds long.
 - 10 pre-defined official folds.
