@@ -145,7 +145,7 @@ Predicted sound class
 
 ---
 
-## System B：预训练 YAMNet Embeddings + SVM
+## System B：pretrained YAMNet Embeddings + SVM
 
 The second system uses the pretrained YAMNet model.
 
