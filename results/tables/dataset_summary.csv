@@ -1,0 +1,2 @@
+NumFiles,NumClasses,NumFolds,MinDuration_s,MaxDuration_s,MeanDuration_s,MedianDuration_s,MonoFiles,MultiChannelFiles
+8732,10,10,0.05,4.0366473149492,3.60752182924634,4,739,7993

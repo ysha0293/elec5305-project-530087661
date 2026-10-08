@@ -1,0 +1,17 @@
+ELEC5305 Experiment Reproducibility Manifest
+Generated: 2026-10-08 23:56:52 *
+MATLAB: 26.1.0.3312084 (R2026a) Update 4 (2026a)
+Platform: MACA64
+Seed: 42
+RNG algorithm: twister
+Target sample rate: 16000 Hz
+MFCC coefficients: 13
+MFCC frame: 25.000 ms
+MFCC hop: 10.000 ms
+SVM kernel: linear
+SVM box constraint: 1
+SVM coding: onevsone
+YAMNet model: yamnet
+YAMNet source URL: https://ssd.mathworks.com/supportfiles/audio/yamnet.zip
+Cache version: v2.1-repro
+Metadata: /Users/shaoyunzhe/Documents/sydney_learning/2026-s2/elec5305/project/UrbanSound8K/metadata/UrbanSound8K.csv

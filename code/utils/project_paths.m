@@ -29,7 +29,16 @@ projectRoot = fileparts(codeDir);
 P.projectRoot = projectRoot;
 P.codeDir = codeDir;
 
-P.datasetRoot = fullfile(projectRoot,"UrbanSound8K");
+candidate1 = fullfile(projectRoot, "UrbanSound8K");
+candidate2 = fullfile(fileparts(projectRoot), "UrbanSound8K");
+
+if isfolder(candidate1)
+    P.datasetRoot = candidate1;
+elseif isfolder(candidate2)
+    P.datasetRoot = candidate2;
+else
+    error("UrbanSound8K dataset not found.");
+end
 P.audioRoot = fullfile(P.datasetRoot,"audio");
 P.metadataFile = fullfile(P.datasetRoot,"metadata","UrbanSound8K.csv");
 
