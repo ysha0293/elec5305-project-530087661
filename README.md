@@ -20,7 +20,7 @@ The current project mainly compares:
 
 These two representation methods are evaluated using a simple SVM classifier.
 
-The goal of this project only only compares the classification performance under the condition of clean data, and further studies how do noise, reverb and channel effects affect audio representation and final classification performance.
+The project makes a comparison of the traditional MFCC feature and pretrained YAMNet embeddings with the same SVM (Support Vector Machine) classifier. The reference condition is the clean benchmark and the subsequent stages explore how noise, reverberation and channel effects affect the audio representations and the performance of the classification.
 
 ---
 ## Research question
@@ -189,7 +189,7 @@ The main evaluation indicators include:
 - Per-class Recall;
 - Confusion Matrix;
 - the average of 10 folds;
-- 10 standard deviations of folds.
+- standard deviation across the 10 folds.
 
 Due to the fact that the difficulty of UrbanSound8K may vary among different folds, this method can avoid  the result which can only rely on one fold.
 
@@ -328,6 +328,10 @@ By simple correlation analysis, we can study whether bigger representation chang
 - [x] Per-class Recall
 - [x] Confusion Matrix
 - [x] Mean ± Standard Deviation across folds
+- [x] Reproducibility setup
+- [x] Fixed random seed
+- [x] Experiment manifest generation
+- [x] Clip-level identifier tracking
 - [ ] Background-noise robustness
 - [ ] Reverberation robustness
 - [ ] Channel-distortion robustness
@@ -354,12 +358,17 @@ code/
 
 results/
 ├── figures/
-└── tables/
+├── tables/
+├── cache/
+├── representation/
+├── reproducibility/
+└── robustness/
 ```
 
-`code` folder contains the main implementation code of the project.
-
-The 'results' folder contains the tables and images generated and filtered by the experiments.
+cache: local feature caches, not uploaded
+representation: reserved for representation-shift analysis
+reproducibility: experiment manifest
+robustness: future noise/reverb/channel results
 
 ---
 
@@ -383,6 +392,22 @@ The relevent MATLAB resources:
 [Transfer Learning with Pretrained Audio Networks](https://www.mathworks.com/help/audio/ug/transfer-learning-with-pretrained-audio-networks.html)
 
 ---
+## Reproducibility
+
+This will be implemented using a fixed random seed and will store the general experimental setting.
+
+The information in the automatically generated reproducibility manifest will include information like:
+
+- MATLAB release;
+- toolbox information;
+- preprocessing settings;
+- MFCC parameters;
+- SVM parameters;
+- YAMNet loading information.
+
+Identifiers are also stored in the feature and prediction output files to allow for matching of clean and perturbed versions of the same recording in subsequent robustness analyses.
+
+---
 
 ## Experimental reproduction instructions
 
@@ -397,28 +422,30 @@ git clone https://github.com/ysha0293/elec5305-project-530087661.git
 Dataset download address:
 [UrbanSound8K Dataset - Zenodo](https://zenodo.org/records/1203745)
 
-Place the decompressed dataset in the project directory.
+After downloading and extracting the UrbanSound8K dataset, place the UrbanSound8K folder in the project root directory, at the same level as the code and results folders.
 
 The expected structure is as follows:
 
 ```text
 project/
 ├── code/
+├── results/
 ├── UrbanSound8K/
 │   ├── audio/
 │   │   ├── fold1/
+│   │   ├── fold2/
 │   │   ├── ...
 │   │   └── fold10/
 │   └── metadata/
 │       └── UrbanSound8K.csv
-└── results/
+└── README.md
 ```
 
 ### 3. Install YAMNet Support Model
 
-we need to make sure matlab audio toolbox can use YAMNet normally.
+The implementation automatically checks whether pretrained YAMNet is available. If it is already available in MATLAB, it is loaded directly. Otherwise, the project loader attempts to prepare the model automatically.
 
-we cna pass the testing by following codes:
+we can pass the testing by following codes:
 
 ```matlab
 [net,classes] = audioPretrainedNetwork("yamnet");
