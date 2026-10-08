@@ -7,12 +7,13 @@
 %   2) MFCC + linear SVM using official 10-fold CV
 %   3) Frozen YAMNet embeddings + linear SVM using official 10-fold CV
 %   4) Preliminary tables and figures for the current project milestone
+%   5) Reproducibility manifest and deterministic random seed
 %
 % FUTURE EXTENSIONS:
-%   5) Background-noise robustness
-%   6) Reverberation robustness
-%   7) Channel-filter robustness
-%   8) Representation-shift and correlation analysis
+%   6) Background-noise robustness
+%   7) Reverberation robustness
+%   8) Channel-filter robustness
+%   9) Representation-shift and correlation analysis
 
 clear;
 clc;
@@ -24,11 +25,19 @@ addpath(genpath(codeDir));
 C = config();
 P = project_paths();
 
+% One deterministic global seed for any algorithm that consults MATLAB's
+% global random-number generator. Perturbation functions use their own
+% deterministic per-clip streams and therefore do not disturb this state.
+rng(C.seed,C.rngAlgorithm);
+
+write_reproducibility_manifest();
+
 fprintf("\n=============================================\n");
 fprintf("ELEC5305 Environmental Sound Project\n");
 fprintf("Project root : %s\n", P.projectRoot);
 fprintf("Dataset root : %s\n", P.datasetRoot);
 fprintf("Results root : %s\n", P.resultsRoot);
+fprintf("Seed         : %d (%s)\n", C.seed, C.rngAlgorithm);
 fprintf("=============================================\n\n");
 
 %% 1. Dataset inspection
@@ -39,12 +48,16 @@ end
 %% 2. Clean official 10-fold benchmark
 if C.run.cleanBenchmark
     cleanResults = run_clean_benchmark();
-    save(fullfile(P.resultsRoot,"clean_results.mat"),"cleanResults","-v7.3");
+    save(fullfile(P.resultsRoot,"clean_results.mat"),"cleanResults","C","-v7.3");
 end
 
 %% Future experiments
-% These modules can be connected here later without changing the clean
-% benchmark implementation.
+% The future runners should preserve the teacher-recommended protocol:
+%
+%   CLEAN training folds -> PERTURBED held-out test fold
+%
+% and the same perturbed waveform must be used to extract both MFCC and
+% YAMNet representations.
 %
 % if C.run.noise
 %     noiseResults = run_noise_experiments();
@@ -63,5 +76,6 @@ end
 % end
 
 fprintf("\nAll currently enabled stages are complete.\n");
-fprintf("Tables : %s\n",P.tableDir);
-fprintf("Figures: %s\n",P.figureDir);
+fprintf("Tables         : %s\n",P.tableDir);
+fprintf("Figures        : %s\n",P.figureDir);
+fprintf("Reproducibility: %s\n",P.reproDir);

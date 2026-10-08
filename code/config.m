@@ -1,11 +1,14 @@
 function C = config()
 %CONFIG Central experiment configuration.
 %
-% Future experiments should read their settings from this file so that all
-% parameters remain reproducible and consistent.
+% All experiment parameters are kept here so the clean benchmark and all
+% later robustness experiments use one reproducible source of truth.
 
+%% Reproducibility
 C.seed = 42;
+C.rngAlgorithm = "twister";
 C.targetFs = 16000;
+C.cache.version = "v2.1-repro";
 
 %% Current experiment switches
 C.run.datasetInspection = true;
@@ -21,18 +24,32 @@ C.run.representationShift = false;
 C.mfcc.numCoeffs = 13;
 C.mfcc.frameMs = 25;
 C.mfcc.hopMs = 10;
+C.mfcc.summaryStatistics = ["mean","std","median","q25","q75"];
+
+%% YAMNet settings
+% The model is loaded as a frozen pretrained feature extractor.
+C.yamnet.modelName = "yamnet";
+C.yamnet.embeddingLayer = "global_average_pooling2d";
+C.yamnet.embeddingDimension = 1024;
+C.yamnet.autoDownload = true;
+C.yamnet.downloadURL = "https://ssd.mathworks.com/supportfiles/audio/yamnet.zip";
 
 %% Downstream classifier
-% Same simple classifier is used for MFCC and YAMNet where practical.
+% The same simple classifier is used for MFCC and YAMNet where practical.
 C.svm.kernel = "linear";
 C.svm.boxConstraint = 1;
+C.svm.coding = "onevsone";
 
 %% Future robustness settings
 C.noise.snrDb = [20 10 0];
 
-% These severity labels are placeholders for the later controlled
-% reverberation/channel experiments. Exact physical parameters can be set
-% when those experiments are implemented.
+% Exact physical values are intentionally left as future experiment
+% settings. The labels provide the planned controlled severity structure.
 C.reverb.levels = ["mild","moderate","strong"];
 C.channel.levels = ["mild","moderate","strong"];
+
+% Future robustness experiments must always follow:
+% clean training folds -> perturbed held-out test fold.
+C.robustness.trainOnCleanOnly = true;
+C.robustness.samePerturbedWaveformForAllRepresentations = true;
 end

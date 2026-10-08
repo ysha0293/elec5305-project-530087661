@@ -1,12 +1,25 @@
-# ELEC5305 Project Code
+# ELEC5305 Project Code — v2 Reproducible Extension
 
 ## Purpose
 
-This codebase supports the complete project:
+This codebase supports:
 
 **MFCCs versus Pretrained Audio Embeddings: Robustness of Environmental Sound Classification**
 
-The current implementation completes the clean preliminary stage and is organised so later robustness experiments can be added without rewriting the existing pipeline.
+The current implementation keeps the original v2 clean benchmark unchanged in scientific design, while adding reproducibility and future-robustness infrastructure.
+
+## What is implemented now
+
+- UrbanSound8K dataset inspection
+- Official UrbanSound8K 10-fold evaluation
+- MFCC + linear SVM clean baseline
+- Frozen pretrained YAMNet embeddings + linear SVM clean baseline
+- Accuracy, Macro-F1, per-class Recall/F1, confusion matrices, mean ± SD
+- Clip-level held-out predictions with `ClipID`
+- Deterministic experiment seed
+- Reproducibility manifest
+- YAMNet automatic detection and one-time download when absent
+- Feature caches with clip identity and configuration metadata
 
 ## Portable directory structure
 
@@ -33,29 +46,41 @@ project/
 │   └── metadata/
 │       └── UrbanSound8K.csv
 │
-└── results/      # created automatically
+├── models/               # created automatically; do not commit model weights
+│   └── yamnet/
+│
+└── results/              # created automatically
+    ├── cache/
+    ├── figures/
+    ├── tables/
+    ├── reproducibility/
+    ├── robustness/
+    └── representation/
 ```
 
-The code contains no absolute `/Users/...` path. Move the whole project folder to another computer and keep the relative structure unchanged.
+No absolute `/Users/...` or Windows drive path is stored in the code.
 
 ## Run order
 
 1. Run `test_setup.m`.
 2. Run `main.m`.
 
-## Current outputs
+`test_setup.m` checks the dataset, required MATLAB functions and YAMNet. If YAMNet is not available, the project downloads the official MathWorks pretrained model once into `models/yamnet/` and reuses it on later runs.
 
-### Dataset inspection
-- total files/classes/folds
-- class counts
-- official fold counts
-- sample-rate counts
-- duration statistics
-- mono/multichannel statistics
-- waveform examples
-- magnitude-spectrum examples
-- spectrogram examples
-- MFCC examples
+## Reproducibility
+
+The project fixes the global seed in `config.m` and writes:
+
+```text
+results/reproducibility/experiment_manifest.mat
+results/reproducibility/experiment_manifest.txt
+```
+
+The manifest records MATLAB release, platform, toolbox versions, seed, MFCC settings, SVM settings, YAMNet source URL and cache version.
+
+Legacy v2 feature caches are upgraded with `ClipID` and metadata when possible, so clean features do not need to be recomputed unnecessarily.
+
+## Current clean outputs
 
 ### MFCC + SVM
 - official 10-fold evaluation
@@ -67,7 +92,7 @@ The code contains no absolute `/Users/...` path. Move the whole project folder t
 - per-class F1 ± SD
 - per-fold confusion matrices
 - aggregate out-of-fold confusion matrix
-- all held-out predictions
+- held-out predictions with clip identity
 
 ### Frozen YAMNet + SVM
 The same evaluation outputs as the MFCC system.
@@ -80,23 +105,37 @@ The same evaluation outputs as the MFCC system.
 - fold-level comparison figures
 - per-class recall comparison
 
-## Results
+## Future robustness protocol
 
-All generated output is stored under:
+The future experiment infrastructure encodes the required controlled design:
 
 ```text
-results/
-├── cache/
-├── figures/
-└── tables/
+clean training folds
+        ↓
+train SVM and fit normalization on clean training data only
+        ↓
+perturbed held-out test fold
+        ↓
+MFCC / YAMNet evaluation
 ```
 
-## Future extensions
+The same perturbed waveform must be generated once and then passed to both MFCC and YAMNet. To preserve the perturbation exactly, the feature extractors now support an `alreadyPreprocessed=true` mode so the perturbed waveform is not peak-normalized again.
 
-The directory already contains reusable modules for:
-- controlled background noise
-- reverberation
-- channel filtering
-- representation distance
+`evaluation/run_robustness_10fold_svm.m` is provided as the future controlled evaluator.
 
-Later experiments should be added under `experiments/`, while keeping feature extraction and evaluation modules unchanged.
+`analysis/compute_representation_shift_table.m` is provided for clip-level clean-to-perturbed representation distances.
+
+## Future experiment sequence
+
+1. Controlled background noise: 20, 10 and 0 dB SNR
+2. Reverberation: controlled mild / moderate / strong conditions
+3. Channel/frequency-response distortion: controlled severity levels
+4. Robustness curves: Macro-F1 versus perturbation severity
+5. Class-level Recall degradation
+6. Clean-to-perturbed representation distance
+7. Representation shift versus classification-performance degradation
+8. Correlation analysis
+
+## Important Git note
+
+Keep `models/` and generated caches/results out of Git unless specifically required. The source code can reproduce/download them.

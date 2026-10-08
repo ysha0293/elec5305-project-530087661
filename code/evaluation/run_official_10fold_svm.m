@@ -1,11 +1,27 @@
-function R = run_official_10fold_svm(X,Y,folds,methodName,P)
-%RUN_OFFICIAL_10FOLD_SVM Official UrbanSound8K 10-fold evaluation.
+function R = run_official_10fold_svm(X,Y,folds,methodName,P,clipID)
+%RUN_OFFICIAL_10FOLD_SVM Official UrbanSound8K 10-fold clean evaluation.
 %
 % Each official fold is used once as the held-out test fold.
 % Feature normalization statistics are calculated from the nine training
 % folds only, avoiding test-data leakage.
+%
+% clipID is optional but strongly recommended. It makes every held-out
+% prediction traceable to the original UrbanSound8K audio clip, which is
+% required for later clean-vs-perturbed representation analysis.
 
 C=config();
+
+if nargin<6 || isempty(clipID)
+    clipID="row_"+string((1:size(X,1))');
+else
+    clipID=string(clipID(:));
+end
+
+assert(size(X,1)==numel(Y) && numel(Y)==numel(folds), ...
+    "X, Y and folds must contain the same number of observations.");
+assert(numel(clipID)==numel(Y), ...
+    "clipID must contain one identifier per observation.");
+
 classOrder=categories(Y);
 nClasses=numel(classOrder);
 
@@ -16,8 +32,10 @@ PerClassRecall=zeros(10,nClasses);
 PerClassF1=zeros(10,nClasses);
 AggregateConfusion=zeros(nClasses,nClasses);
 
+allClipID=strings(0,1);
 allTrue=strings(0,1);
 allPred=strings(0,1);
+allCorrect=false(0,1);
 allFold=zeros(0,1);
 
 for f=1:10
@@ -49,7 +67,7 @@ for f=1:10
     model=fitcecoc( ...
         Xtr,Ytr, ...
         "Learners",learner, ...
-        "Coding","onevsone");
+        "Coding",C.svm.coding);
 
     yPred=predict(model,Xte);
 
@@ -62,9 +80,15 @@ for f=1:10
     PerClassF1(f,:)=M.f1(:)';
     AggregateConfusion=AggregateConfusion+M.confusion;
 
-    allTrue=[allTrue;string(Yte)];
-    allPred=[allPred;string(yPred)];
-    allFold=[allFold;repmat(f,nnz(idxTest),1)];
+    currentClipID=clipID(idxTest);
+    currentTrue=string(Yte);
+    currentPred=string(yPred);
+
+    allClipID=[allClipID;currentClipID]; %#ok<AGROW>
+    allTrue=[allTrue;currentTrue]; %#ok<AGROW>
+    allPred=[allPred;currentPred]; %#ok<AGROW>
+    allCorrect=[allCorrect;currentTrue==currentPred]; %#ok<AGROW>
+    allFold=[allFold;repmat(f,nnz(idxTest),1)]; %#ok<AGROW>
 
     fprintf("Accuracy : %.2f %%\n",100*M.accuracy);
     fprintf("Macro-F1: %.4f\n",M.macroF1);
@@ -130,9 +154,9 @@ plot_confusion_matrix( ...
     methodName+" - Aggregate Out-of-Fold Confusion Matrix", ...
     fullfile(P.figureDir,lower(methodName)+"_aggregate_confusion.png"));
 
-%% Save every held-out prediction
-Predictions=table(allFold,allTrue,allPred, ...
-    'VariableNames',{'Fold','TrueLabel','PredictedLabel'});
+%% Save every held-out prediction with clip identity
+Predictions=table(allClipID,allFold,allTrue,allPred,allCorrect, ...
+    'VariableNames',{'ClipID','Fold','TrueLabel','PredictedLabel','Correct'});
 
 writetable(Predictions, ...
     fullfile(P.tableDir,lower(methodName)+"_heldout_predictions.csv"));
