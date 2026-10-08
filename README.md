@@ -505,16 +505,42 @@ Is the audio representation with the best classification performance under the c
 ## References and Resources
 
 1. J. Salamon, C. Jacoby, and J. P. Bello,  
-   *A Dataset and Taxonomy for Urban Sound Research*, ACM Multimedia, 2014.
+   *A Dataset and Taxonomy for Urban Sound Research*,  
+   Proceedings of the 22nd ACM International Conference on Multimedia, 2014.  
+   UrbanSound8K dataset: https://zenodo.org/records/1203745
 
-2. [UrbanSound8K Dataset - Zenodo](https://zenodo.org/records/1203745)
+2. K. J. Piczak,  
+   *Environmental Sound Classification with Convolutional Neural Networks*,  
+   2015 IEEE 25th International Workshop on Machine Learning for Signal Processing (MLSP), pp. 1–6, 2015.  
+   DOI: 10.1109/MLSP.2015.7324337
 
-3. [MATLAB Audio Toolbox Pretrained Models](https://www.mathworks.com/help/audio/pretrained-models.html)
+3. J. F. Gemmeke, D. P. W. Ellis, D. Freedman, A. Jansen, W. Lawrence,  
+   R. C. Moore, M. Plakal, and M. Ritter,  
+   *Audio Set: An Ontology and Human-Labeled Dataset for Audio Events*,  
+   2017 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP), pp. 776–780, 2017.  
+   DOI: 10.1109/ICASSP.2017.7952261
 
-4. [MATLAB Transfer Learning with Pretrained Audio Networks](https://www.mathworks.com/help/audio/ug/transfer-learning-with-pretrained-audio-networks.html)
+4. S. Srivastava, H.-H. Wu, J. Rulff, M. Fuentes, M. Cartwright,  
+   C. T. Silva, A. Arora, and J. P. Bello,  
+   *A Study on Robustness to Perturbations for Representations of Environmental Sound*,  
+   2022 30th European Signal Processing Conference (EUSIPCO), pp. 125–129, 2022.
 
-5. [YAMNet Transfer Learning Tutorial](https://www.tensorflow.org/tutorials/audio/transfer_learning_audio)
+5. TensorFlow,  
+   *Sound Classification with YAMNet*,  
+   TensorFlow Hub Documentation.  
+   https://www.tensorflow.org/hub/tutorials/yamnet
 
-6. [A Study on Robustness to Perturbations for Representations of Environmental Sound](https://arxiv.org/abs/2203.10425)
+6. MathWorks,  
+   *Audio Toolbox Pretrained Models*,  
+   MATLAB Documentation.  
+   https://www.mathworks.com/help/audio/pretrained-models.html
 
+7. MathWorks,  
+   *Transfer Learning with Pretrained Audio Networks*,  
+   MATLAB Documentation.  
+   https://www.mathworks.com/help/audio/ug/transfer-learning-with-pretrained-audio-networks.html
+
+8. OpenL3,  
+   *Open-Source Deep Audio and Image Embeddings*,  
+   https://github.com/marl/openl3
 
