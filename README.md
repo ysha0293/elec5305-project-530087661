@@ -76,15 +76,15 @@ The original audio file of UrbanSound8K will not be uploaded to this GitHub.
 
 ### Background noise data
 
-The background noise data used in the robustness experiment in this project applies the OFFICE environment recording in the DEMAND dataset.
+The background-noise robustness experiment in this project uses the OOFFICE environment recording from the DEMAND dataset.
 
-The real used noise document in this project has included in the Github repository, and the path is :
+The real noise document in this project has included in the Github repository, and the path is :
 
 `assets/noise/office.wav`
 
-Therefore, in order to reproduce this experiment, there is no necessary to download other file in the DEMAND official website (and download it and put it at the same level of UrbanSound8K dataset).
+Therefore, in order to reproduce this experiment, it is no necessary to download other file in the DEMAND official website (and download it and put it at the same level of UrbanSound8K dataset).
 
-The corresponding data source and the permission information has been placed:
+The corresponding data source and the licensing information has been placed:
 
 - `assets/noise/README.txt`
 - `assets/noise/SOURCES.csv`
