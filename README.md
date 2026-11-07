@@ -252,15 +252,16 @@ The next phase will futher study that When the recording conditions change, whet
 
 ---
 
-## The planned robustness experiment
+## The robustness experiment
 
-After building clean benchmark, the next phase will evaluate the robustness of model under the different recording conditions.
+After building clean benchmark, the next phase evaluate the robustness of model under the different recording conditions.
 
 The classifer still uses the clean UrbanSound8K audio to train.
 
 Only held-out test recordings will be gradually added to the perturbation.
 
-The following types of disturbances are initially planned to be used:
+MFCC and YAMNet uses the same perturbed waveform under every interference condition, which can ensure the comparison conditions between the two representation methods are consistent.
+
 
 ### Background Noise
 
@@ -272,15 +273,27 @@ Initial plain uses:
 - 10 dB SNR；
 - 0 dB SNR
 
+The noise source is the fixed external environment noise recording in 'assets/noise/office.wav'.
+
 ### Reverberation
 
-Add reverb to the audio through Room Impulse Response.
+Add reverb to the audio through Room Impulse Response. And reverberation is achieved by convolving the held-out test audio and synthetic room impulse response.
+
+Use three reverberation intensities:
+-RT60 ≈ 0.2 seconds
+-RT60 ≈ 0.5 seconds
+-RT60 ≈ 0.8 seconds
 
 ### Channel / Frequency-Response Distortion
 
 Simulate the situation where the frequency response of the microphone or recording channel changes through controlled filtering.
 
 MFCC and YAMNet will use exactly the same perturbed waveform for feature extraction to ensure that the comparison process is strictly controlled.
+
+Use three bandwidth conditions:
+- 100–7000 Hz
+- 200–5000 Hz
+- 300–3400 Hz
 
 ---
 
