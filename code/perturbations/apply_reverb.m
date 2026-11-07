@@ -1,11 +1,14 @@
 function y = apply_reverb(x,rir)
-%APPLY_REVERB Convolve audio with a room impulse response.
+%APPLY_REVERB Convolve a preprocessed waveform with a fixed RIR.
 %
-% Exact mild/moderate/strong RIR conditions will be configured during the
-% reverberation stage.
+% Output is cropped to the original clip length so clean and perturbed
+% representations correspond to the same nominal recording duration.
 
-x=double(x(:));
-rir=double(rir(:));
+x = double(x(:));
+rir = double(rir(:));
+assert(~isempty(rir),"RIR must not be empty.");
 
-y=fftfilt(rir,x);
+fullY = fftfilt(rir,x);
+y = fullY(1:numel(x));
+y(~isfinite(y)) = 0;
 end

@@ -1,55 +1,85 @@
 function C = config()
-%CONFIG Central experiment configuration.
+%CONFIG Single source of truth for the complete ELEC5305 experiment.
 %
-% All experiment parameters are kept here so the clean benchmark and all
-% later robustness experiments use one reproducible source of truth.
+% HARD EXPERIMENTAL RULES (do not relax)
+%   * UrbanSound8K official folds are never replaced by a random split.
+%   * The downstream SVM is trained on CLEAN training folds only.
+%   * Perturbations are applied ONLY to the held-out test recordings.
+%   * MFCC and YAMNet consume the exact same perturbed waveform.
+%   * All perturbation severities are fixed before evaluation.
 
 %% Reproducibility
 C.seed = 42;
 C.rngAlgorithm = "twister";
 C.targetFs = 16000;
 C.cache.version = "v2.1-repro";
+C.cache.robustnessVersion = "v3.0-final-robustness";
 
-%% Current experiment switches
+%% Stages
 C.run.datasetInspection = true;
 C.run.cleanBenchmark = true;
+C.run.noise = true;
+C.run.reverb = true;
+C.run.channel = true;
+C.run.finalAnalysis = true;
 
-%% Future experiment switches
-C.run.noise = false;
-C.run.reverb = false;
-C.run.channel = false;
-C.run.representationShift = false;
+%% Storage policy
+% Large feature matrices are working data, not report results.
+% They live under project/work/ and are excluded from Git.
+C.storage.keepPerturbedFeatureCachesAfterSuccess = false;
+C.storage.keepCleanFeatureCaches = true;
+C.storage.keepClipLevelPredictionFiles = false;
+C.storage.keepClipLevelDistanceFiles = false;
+C.storage.saveExtendedDatasetInspection = false;
+C.storage.savePerFoldConfusionMatrices = false;
+C.storage.savePerMethodRedundantPlots = false;
 
-%% MFCC settings
+%% MFCC representation
 C.mfcc.numCoeffs = 13;
 C.mfcc.frameMs = 25;
 C.mfcc.hopMs = 10;
 C.mfcc.summaryStatistics = ["mean","std","median","q25","q75"];
 
-%% YAMNet settings
-% The model is loaded as a frozen pretrained feature extractor.
+%% Frozen YAMNet representation
 C.yamnet.modelName = "yamnet";
 C.yamnet.embeddingLayer = "global_average_pooling2d";
 C.yamnet.embeddingDimension = 1024;
 C.yamnet.autoDownload = true;
 C.yamnet.downloadURL = "https://ssd.mathworks.com/supportfiles/audio/yamnet.zip";
 
-%% Downstream classifier
-% The same simple classifier is used for MFCC and YAMNet where practical.
+%% Common downstream classifier
 C.svm.kernel = "linear";
 C.svm.boxConstraint = 1;
 C.svm.coding = "onevsone";
 
-%% Future robustness settings
-C.noise.snrDb = [20 10 0];
-
-% Exact physical values are intentionally left as future experiment
-% settings. The labels provide the planned controlled severity structure.
-C.reverb.levels = ["mild","moderate","strong"];
-C.channel.levels = ["mild","moderate","strong"];
-
-% Future robustness experiments must always follow:
-% clean training folds -> perturbed held-out test fold.
+%% Robustness protocol (must stay true)
 C.robustness.trainOnCleanOnly = true;
 C.robustness.samePerturbedWaveformForAllRepresentations = true;
+C.robustness.useOfficialFoldsOnly = true;
+
+%% Background-noise experiment
+% Formal setting: unrelated EXTERNAL environmental-noise WAV files.
+% Current project uses DEMAND OOFFICE 16 kHz ch01 as the fixed source.
+C.noise.mode = "external";
+C.noise.snrDb = [20 10 0];
+C.noise.allowedExtensions = [".wav",".flac",".mp3",".m4a"];
+
+%% Reverberation experiment
+% Controlled deterministic synthetic RIRs with documented RT60 values.
+C.reverb.labels = ["mild","moderate","strong"];
+C.reverb.rt60Seconds = [0.20 0.50 0.80];
+C.reverb.rirDurationSeconds = 1.00;
+C.reverb.directToReverbDb = [12 8 4];
+
+%% Channel / frequency-response experiment
+% Increasingly restricted passbands at 16 kHz sampling rate.
+C.channel.labels = ["mild","moderate","strong"];
+C.channel.lowHz = [100 200 300];
+C.channel.highHz = [7000 5000 3400];
+C.channel.filterOrder = 8;
+
+%% Representation-shift metrics
+% Interpret distances WITHIN each representation only because scales differ.
+C.shift.mfccMetric = "euclidean";
+C.shift.yamnetMetric = "cosine";
 end

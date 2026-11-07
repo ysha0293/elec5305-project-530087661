@@ -1,0 +1,8 @@
+Official folds and ClipID uniqueness: PASS
+Robustness protocol flags: PASS
+Required compact final analysis files: PASS
+All 9 conditions, clip alignment and held-out coverage: PASS
+Controlled SNR values: PASS
+Explicit clean-only SVM / training-only normalization leakage audit: PASS
+Same perturbed waveform used for MFCC and YAMNet: PASS
+ALL CHECKS PASSED.

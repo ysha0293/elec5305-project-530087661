@@ -1,0 +1,2 @@
+Method,Perturbation,Severity,MeanAccuracy,StdAccuracy,MeanMacroF1,StdMacroF1
+MFCC,reverb,mild,0.621773053746433,0.0509644619994147,0.628744083933327,0.0496881925195161

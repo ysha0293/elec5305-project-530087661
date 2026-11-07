@@ -1,0 +1,2 @@
+Method,Perturbation,Severity,MeanAccuracy,StdAccuracy,MeanMacroF1,StdMacroF1
+MFCC,channel,moderate,0.297945370335483,0.0302587885624406,0.285678685549107,0.0391260998748868

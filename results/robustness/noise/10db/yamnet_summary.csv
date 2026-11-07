@@ -1,0 +1,2 @@
+Method,Perturbation,Severity,MeanAccuracy,StdAccuracy,MeanMacroF1,StdMacroF1
+YAMNet,noise,10dB,0.780780390712335,0.0301240372173988,0.789605396076043,0.0353053605470308

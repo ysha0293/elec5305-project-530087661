@@ -1,5 +1,4 @@
 .DS_Store
-UrbanSound8K/
-models/
-*.mat
-results/cache/
+*.asv
+*.autosave
+*.tmp

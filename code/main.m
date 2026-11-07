@@ -1,81 +1,71 @@
-%% ELEC5305 Final Project - Main Entry
+%% ELEC5305 Final Project - Compact Reproducible Pipeline
 % MFCCs versus Pretrained Audio Embeddings:
 % Robustness of Environmental Sound Classification
 %
-% CURRENTLY IMPLEMENTED:
-%   1) UrbanSound8K dataset inspection
-%   2) MFCC + linear SVM using official 10-fold CV
-%   3) Frozen YAMNet embeddings + linear SVM using official 10-fold CV
-%   4) Preliminary tables and figures for the current project milestone
-%   5) Reproducibility manifest and deterministic random seed
-%
-% FUTURE EXTENSIONS:
-%   6) Background-noise robustness
-%   7) Reverberation robustness
-%   8) Channel-filter robustness
-%   9) Representation-shift and correlation analysis
+% results/ = compact report-ready outputs only
+% work/    = large intermediate/reusable caches 
 
-clear;
-clc;
-close all;
+clear; clc; close all;
+codeDir=fileparts(mfilename("fullpath")); addpath(genpath(codeDir));
+C=config(); P=project_paths(); rng(C.seed,C.rngAlgorithm);
 
-codeDir = fileparts(mfilename("fullpath"));
-addpath(genpath(codeDir));
+fprintf("\n=============================================\n");
+fprintf("ELEC5305 COMPLETE ROBUSTNESS PIPELINE\n");
+fprintf("Project root : %s\n",P.projectRoot);
+fprintf("Dataset root : %s\n",P.datasetRoot);
+fprintf("Seed         : %d (%s)\n",C.seed,C.rngAlgorithm);
+fprintf("=============================================\n\n");
 
-C = config();
-P = project_paths();
+migrate_legacy_working_files();
+write_reproducibility_manifest();
+if C.run.datasetInspection, inspect_dataset(); end
 
-% One deterministic global seed for any algorithm that consults MATLAB's
-% global random-number generator. Perturbation functions use their own
-% deterministic per-clip streams and therefore do not disturb this state.
-rng(C.seed,C.rngAlgorithm);
+%% Clean benchmark
+% New compact location is work/clean_results.mat. For backward compatibility,
+% an existing results/clean_results.mat from the previous version is accepted.
+cleanFile=P.cleanWorkFile;
+legacyCleanFile=fullfile(P.resultsRoot,"clean_results.mat");
+requiredCleanTables=["mfcc_summary.csv","yamnet_summary.csv","mfcc_per_class_metrics.csv","yamnet_per_class_metrics.csv"];
+cleanReady=isfile(cleanFile) || isfile(legacyCleanFile);
+for k=1:numel(requiredCleanTables), cleanReady=cleanReady && isfile(fullfile(P.tableDir,requiredCleanTables(k))); end
+
+if C.run.cleanBenchmark && ~cleanReady
+    cleanResults=run_clean_benchmark();
+    save(cleanFile,"cleanResults","C","-v7.3");
+elseif cleanReady
+    if ~isfile(cleanFile) && isfile(legacyCleanFile)
+        S=load(legacyCleanFile,"cleanResults","C");
+        save(cleanFile,"-struct","S","-v7.3");
+    end
+    fprintf("Clean benchmark already exists; reusing completed official 10-fold results.\n");
+else
+    error("Clean benchmark results are missing. Enable C.run.cleanBenchmark in config.m.");
+end
+
+%% Formal robustness experiments
+noiseResults=[]; reverbResults=[]; channelResults=[];
+if C.run.noise, noiseResults=run_noise_experiments(); end
+if C.run.reverb, reverbResults=run_reverb_experiments(); end
+if C.run.channel, channelResults=run_channel_experiments(); end
+
+%% Final analysis + audit + safe cleanup
+if C.run.finalAnalysis
+    assert(~isempty(noiseResults) && ~isempty(reverbResults) && ~isempty(channelResults), ...
+        "Final analysis requires all three robustness families in the same run.");
+    finalAnalysis=run_final_analysis(noiseResults,reverbResults,channelResults); 
+    integrityReport=audit_experiment_integrity(noiseResults,reverbResults,channelResults); 
+    cleanup_working_caches();
+    prune_legacy_result_files();
+end
 
 write_reproducibility_manifest();
 
 fprintf("\n=============================================\n");
-fprintf("ELEC5305 Environmental Sound Project\n");
-fprintf("Project root : %s\n", P.projectRoot);
-fprintf("Dataset root : %s\n", P.datasetRoot);
-fprintf("Results root : %s\n", P.resultsRoot);
-fprintf("Seed         : %d (%s)\n", C.seed, C.rngAlgorithm);
-fprintf("=============================================\n\n");
-
-%% 1. Dataset inspection
-if C.run.datasetInspection
-    inspect_dataset();
-end
-
-%% 2. Clean official 10-fold benchmark
-if C.run.cleanBenchmark
-    cleanResults = run_clean_benchmark();
-    save(fullfile(P.resultsRoot,"clean_results.mat"),"cleanResults","C","-v7.3");
-end
-
-%% Future experiments
-% The future runners should preserve the teacher-recommended protocol:
-%
-%   CLEAN training folds -> PERTURBED held-out test fold
-%
-% and the same perturbed waveform must be used to extract both MFCC and
-% YAMNet representations.
-%
-% if C.run.noise
-%     noiseResults = run_noise_experiments();
-% end
-%
-% if C.run.reverb
-%     reverbResults = run_reverb_experiments();
-% end
-%
-% if C.run.channel
-%     channelResults = run_channel_experiments();
-% end
-%
-% if C.run.representationShift
-%     shiftResults = run_representation_shift_analysis();
-% end
-
-fprintf("\nAll currently enabled stages are complete.\n");
-fprintf("Tables         : %s\n",P.tableDir);
-fprintf("Figures        : %s\n",P.figureDir);
-fprintf("Reproducibility: %s\n",P.reproDir);
+fprintf("COMPLETE. Compact report outputs:\n");
+fprintf("Tables        : %s\n",P.tableDir);
+fprintf("Figures       : %s\n",P.figureDir);
+fprintf("Robustness    : %s\n",P.robustnessDir);
+fprintf("Representation: %s\n",P.representationDir);
+fprintf("Audit/manifest: %s\n",P.reproDir);
+fprintf("Working cache : %s (not for submission)\n",P.workDir);
+fprintf("=============================================\n");

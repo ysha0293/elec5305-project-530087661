@@ -1,0 +1,2 @@
+Method,Perturbation,Severity,MeanAccuracy,StdAccuracy,MeanMacroF1,StdMacroF1
+YAMNet,channel,moderate,0.728857461210264,0.0381698937968627,0.735141094047342,0.0458307275544055

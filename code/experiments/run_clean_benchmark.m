@@ -1,5 +1,7 @@
 function results = run_clean_benchmark()
 %RUN_CLEAN_BENCHMARK Complete clean MFCC-vs-YAMNet official 10-fold study.
+% The SVMs trained during this benchmark are saved and reused by robustness;
+% there is no second normal-path SVM training stage.
 
 P=project_paths();
 meta=load_urbansound8k_metadata(P);

@@ -1,0 +1,7 @@
+Method,Perturbation,Severity,TrueClass,PerturbedPredictedClass,ConfusionCountIncrease,ExampleClipID
+MFCC,noise,0dB,jackhammer,engine_idling,278,103074-7-1-4.wav
+YAMNet,noise,0dB,air_conditioner,engine_idling,26,100852-0-0-13.wav
+MFCC,reverb,strong,engine_idling,air_conditioner,110,103249-5-0-1.wav
+YAMNet,reverb,strong,engine_idling,drilling,83,103438-5-0-0.wav
+MFCC,channel,strong,engine_idling,gun_shot,750,102857-5-0-10.wav
+YAMNet,channel,strong,air_conditioner,dog_bark,438,101729-0-0-13.wav

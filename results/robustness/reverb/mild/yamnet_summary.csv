@@ -1,0 +1,2 @@
+Method,Perturbation,Severity,MeanAccuracy,StdAccuracy,MeanMacroF1,StdMacroF1
+YAMNet,reverb,mild,0.774205745951105,0.0316364351230667,0.781607305811588,0.0345034401261488

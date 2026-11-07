@@ -1,0 +1,2 @@
+Method,Perturbation,Severity,MeanAccuracy,StdAccuracy,MeanMacroF1,StdMacroF1
+MFCC,noise,0dB,0.55068986907534,0.0430087877755695,0.527231335997683,0.0425704506085818
