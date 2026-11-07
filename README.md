@@ -365,11 +365,11 @@ By simple correlation analysis, we can study whether bigger representation chang
 - [x] Fixed random seed
 - [x] Experiment manifest generation
 - [x] Clip-level identifier tracking
-- [ ] Background-noise robustness
-- [ ] Reverberation robustness
-- [ ] Channel-distortion robustness
-- [ ] Representation-distance analysis
-- [ ] Representation-shift / performance correlation
+- [x] Background-noise robustness
+- [x] Reverberation robustness
+- [x] Channel-distortion robustness
+- [x] Representation-distance analysis
+- [x] Representation-shift / performance correlation
 
 ---
 
