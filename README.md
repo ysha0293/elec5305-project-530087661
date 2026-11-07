@@ -375,7 +375,15 @@ By simple correlation analysis, we can study whether bigger representation chang
 
 ## Repository Structure
 
+## Repository Structure
+
 ```text
+assets/
+└── noise/
+    ├── office.wav
+    ├── README.txt
+    └── SOURCES.csv
+
 code/
 ├── main.m
 ├── config.m
@@ -389,19 +397,32 @@ code/
 ├── plots/
 └── utils/
 
+feedback/
+└── ELEC5305_Project_Proposal(Yunzhe Shao-530087661).pdf
+
+models/
+└── yamnet/
+
 results/
 ├── figures/
 ├── tables/
-├── cache/
 ├── representation/
 ├── reproducibility/
 └── robustness/
+
+report/
+└── Final project report will be added before submission.
 ```
 
-cache: local feature caches, not uploaded
-representation: reserved for representation-shift analysis
-reproducibility: experiment manifest
-robustness: future noise/reverb/channel results
+`assets/noise/`  stores the external DEMAND noise recording that is used on the background noise robustness experiment.
+
+`feedback/` stores the Project Feedback 1 corresponding  proposal file.
+
+`models/yamnet/` stores the YAMNet model files and related supporting files used in this project.
+
+`results/` stores the figures, table, robustness experiment results, representation-shift analysis results and the reproducibility related information produced by final experiments
+
+`report/` stores the final report.
 
 ---
 
