@@ -1,150 +1,346 @@
-# ELEC5305 Project — MFCCs versus Pretrained Audio Embeddings
+# Elec5305-project-530087661
+Student: Yunzhe Shao (SID: 530087661)
 
-**Student:** Yunzhe Shao (SID: 530087661)
-**Topic:** Robustness of Environmental Sound Classification
+**GitHub Repository:** [View Repository](https://github.com/ysha0293/elec5305-project-530087661)
 
-## Research Questions
+**GitHub Pages:** [View Project Website](https://ysha0293.github.io/elec5305-project-530087661/)
 
-**RQ1.** How robust are conventional MFCC features and pretrained deep audio embeddings to realistic acoustic and recording-channel perturbations in environmental sound classification?
+## MFCCs versus Pretrained Audio Embeddings: Robustness of Environmental Sound Classification
+This project studies the classification of the environmental sound classification based on the Urbansound8K dataset
 
-**RQ2.** Can changes in the audio representation predict when classification performance will fail?
+This project initially focuses on comparing different audio features and machine learning methods by classification accuracy.
 
-The project compares two controlled representation pipelines using the same simple downstream classifier:
+Based on the project feedback one, The main research focus of the current project has been adjusted to:
 
-- **MFCC statistics + linear ECOC SVM**
-- **Frozen pretrained YAMNet embeddings + linear ECOC SVM**
+Study the robustness of different audio representation methods when the acoustic environment or recording conditions change.
 
-The goal is not only to compare clean benchmark accuracy, but to measure how classification and representation stability change under noise, reverberation and channel distortion.
+The current project mainly compares:
+- traditional MFCC features
+- pretrained YAMNet audio embedding
+
+These two representation methods are evaluated using a simple SVM classifier.
+
+The project makes a comparison of the traditional MFCC feature and pretrained YAMNet embeddings with the same SVM (Support Vector Machine) classifier. The reference condition is the clean benchmark and the subsequent stages explore how noise, reverberation and channel effects affect the audio representations and the performance of the classification.
+
+---
+## Research question
+
+### main research probelm:
+**How robust are conventional MFCC features and pretrained deep audio embeddings to realistic acoustic and recording-channel perturbations in environmental sound classification?**
+### secondary question:
+**Can changes in the audio representation predict when classification performance will fail?**
+
+
+## Dataset
+
+This project uses the UrbanSound8K dataset.
+
+UrbanSound8K includes:
+
+- 8732 labeled audio segments;
+- 10 environmental sound categories;
+Each audio segment is approximately 4 seconds long.
+- 10 pre-defined official folds.
+
+The 10 categories are respectively:
+
+1. Air Conditioner
+2. Car Horn
+3. Children Playing
+4. Dog Bark
+5. Drilling
+6. Engine Idling
+7. Gun Shot
+8. Jackhammer
+9. Siren
+10. Street Music
+
+The UrbanSound8K dataset can be downloaded from Zenodo:
+
+[Download UrbanSound8K Dataset](https://zenodo.org/records/1203745)
+
+The expected directory structure of the dataset is as follows:
+```text
+UrbanSound8K/
+├── audio/
+│ ├── fold1/
+│ ├── fold2/
+│ ├──...
+│ └── fold10/
+│
+└── metadata/
+    └── UrbanSound8K.csv
+```
+The original audio file of UrbanSound8K will not be uploaded to this GitHub.
+
+---
+## The connection with ELEC 5305
+
+This project is directly related to mutiple audio signal processing learned in the elec5305, including:
+
+- Audio preprocessing
+- Sampling and resampling
+- Short-term analysis
+- Window function
+- Fourier spectrum analysis
+- Spectrogram
+- Filterbank
+- MFCC
+- Signal-to-Noise Ratio
+- Convolution and reverberation
+- Channel effect and frequency response effect
+
+Especially during the extraction process of MFCC, This project will not merely use MFCC as a MATLAB function.
+
+The main signal processing process of MFCC is :
+```text
+Audio
+  ↓
+Short-time frames
+  ↓
+Windowing
+  ↓
+Fourier spectrum
+  ↓
+Mel filterbank
+  ↓
+Log energies
+  ↓
+DCT
+  ↓
+MFCC
+```
+
+It can connect the environmental sound classification task with the signal processing content learned in elec5305 directly.
+
+---
+## System A：MFCC + SVM
+The first system uses the traditional manual design of audio features.
+
+Current MFCC representation includes:
+
+- MFCC coefficients;
+- First-order MFCC deltas;
+- Statistical summary based on the time dimension
+
+The extracted features use Support Vector Machine (SVM) to classify.
+
+The purpose of this system is to provide a traditional dsp baseline with strong interpretability.
+
+The whole process is:
+
+```text
+Audio
+  ↓
+Preprocessing
+  ↓
+MFCC extraction
+  ↓
+Feature statistics
+  ↓
+SVM
+  ↓
+Predicted sound class
+```
 
 ---
 
-## Dataset and official evaluation protocol
+## System B：pretrained YAMNet Embeddings + SVM
 
-The project uses **UrbanSound8K** (8732 clips, 10 classes, 10 predefined official folds).
+The second system uses the pretrained YAMNet model.
 
-The official folds are always preserved. No new random train/test split is created. For each fold:
+YAMNet is used as the frozen feature extractor in this project, instead of being trained from scratch.
 
-```text
-9 official folds -> CLEAN training data
-1 official fold  -> held-out test data
-```
-
-For robustness experiments the held-out test waveform is perturbed, while the nine training folds stay clean:
+The whole process is :
 
 ```text
-CLEAN training folds -> fixed SVM
-PERTURBED held-out fold -> test only
+Audio
+  ↓
+Pretrained YAMNet
+  ↓
+Audio embeddings
+  ↓
+Embedding statistics
+  ↓
+SVM
+  ↓
+Predicted sound class
 ```
 
-Normalization parameters (`mu`, `sigma`) are estimated from the clean training folds only. The held-out fold never participates in model fitting or normalization fitting.
+MFCC and YAMNet use similar simple downstream classifiers, which can make the experiment to compare different audio representations more intensively rather than comparing the complexity of classifiers
 
 ---
 
-## Clean benchmark
+## Official 10-Fold Evaluation
+
+This project always uses the fold structure of the official urbansound8k.
+
+Random train / test spilt will not be re-created.
+
+In each evaluated process:
+
+1. choose a official fold as the held-out test fold
+2. the left 9 folds are used for training
+3. Repeat the process for all 10 folds
+
+The main evaluation indicators include:
+- Accuracy;
+- Macro-F1;
+- Per-class Recall;
+- Confusion Matrix;
+- the average of 10 folds;
+- standard deviation across the 10 folds.
+
+Due to the fact that the difficulty of UrbanSound8K may vary among different folds, this method can avoid  the result which can only rely on one fold.
+
+---
+
+## Initial Clean Benchmark
+
+Currently, I have used the official 10-fold protocol to compare clean-condition evaluation.
 
 | Method | Mean Accuracy | Mean Macro-F1 |
 |---|---:|---:|
 | MFCC + SVM | **63.43 ± 4.82%** | **0.642 ± 0.047** |
 | YAMNet + SVM | **78.37 ± 3.19%** | **0.792 ± 0.037** |
 
-The clean benchmark reports accuracy, Macro-F1, per-class recall, confusion matrices and mean ± standard deviation across the official ten folds.
+Current clean results indicate that the average classification performance of pretrained YAMNet embeddings is higher than MFCC featrues.
+
+However, The main goal of this project is not to determine which method can achieve the highest clean accuracy.
+
+The next phase will futher study that When the recording conditions change, whether these audio representations still maintain reliable classification performance.
 
 ---
 
-## Final robustness experiments
+## Clean Benchmark Figures
 
-The formal experiment uses three perturbation families and three fixed severity levels.
+### Averge Accuracy
 
-### 1. External environmental noise
+![Clean Accuracy](results/figures/clean_accuracy_mean_std.png)
 
-Unrelated external environmental-noise recordings are added to the held-out test clips at:
+### Averge Macro-F1
 
-- **20 dB SNR**
-- **10 dB SNR**
-- **0 dB SNR**
+![Clean Macro-F1](results/figures/clean_macro_f1_mean_std.png)
 
-The exact noise file and segment used for each clip are selected deterministically from a fixed seed. The same perturbed waveform is used for both MFCC and YAMNet.
+###  Accuracy in Official Folds
 
-### 2. Reverberation
+![Fold Accuracy Comparison](results/figures/clean_accuracy_fold_comparison.png)
 
-A fixed deterministic room impulse response is generated for each planned severity:
+### Per-Class Recall
 
-- **mild:** RT60 ≈ 0.20 s
-- **moderate:** RT60 ≈ 0.50 s
-- **strong:** RT60 ≈ 0.80 s
-
-The same RIR for a given severity is reused across representations and reruns.
-
-### 3. Channel / frequency-response distortion
-
-Controlled zero-phase band-limiting is used:
-
-- **mild:** 100–7000 Hz
-- **moderate:** 200–5000 Hz
-- **strong:** 300–3400 Hz
-
-All parameters are defined in `code/config.m` before evaluation.
+![Per-Class Recall](results/figures/clean_per_class_recall_comparison.png)
 
 ---
 
-## Controlled comparison and leakage prevention
+## The planned robustness experiment
 
-The implementation enforces the following rules:
+After building clean benchmark, the next phase will evaluate the robustness of model under the different recording conditions.
 
-- official UrbanSound8K folds only;
-- clean training data only;
-- perturbations applied only to the held-out test recordings;
-- no perturbed sample is used to fit the SVM;
-- training-only feature normalization;
-- YAMNet is frozen and used only as a feature extractor;
-- the same perturbed waveform is used for MFCC and YAMNet;
-- clean and perturbed rows are matched by `ClipID`;
-- no test-set hyperparameter tuning is performed;
-- clean fold models are trained once and cached, then reused by all perturbation conditions;
-- deterministic per-clip/per-condition seeds are used;
-- external noise filenames and SHA-256 hashes are recorded in the reproducibility manifest.
+The classifer still uses the clean UrbanSound8K audio to train.
+
+Only held-out test recordings will be gradually added to the perturbation.
+
+The following types of disturbances are initially planned to be used:
+
+### Background Noise
+
+Add controlled environmental noise with different SNR levels to the test audio.
+
+Initial plain uses:
+
+- 20 dB SNR；
+- 10 dB SNR；
+- 0 dB SNR
+
+### Reverberation
+
+Add reverb to the audio through Room Impulse Response.
+
+### Channel / Frequency-Response Distortion
+
+Simulate the situation where the frequency response of the microphone or recording channel changes through controlled filtering.
+
+MFCC and YAMNet will use exactly the same perturbed waveform for feature extraction to ensure that the comparison process is strictly controlled.
 
 ---
 
-## Representation-shift analysis
+## Robustness analysis
 
-For every clean clip and corresponding perturbed clip, the representation distance is measured.
+For each types of audio representation, we will compare the clean performance with perturbed performance.
 
-- **MFCC:** Euclidean distance between 130-D summary vectors
-- **YAMNet:** cosine distance between 2048-D embedding summaries
-
-Distances are interpreted **within each representation**; MFCC and YAMNet raw distance magnitudes are not directly compared because the metrics/scales differ.
-
-For each condition, the project compares:
+The decline in robustness can be expressed as:
 
 ```text
-mean representation shift
-        versus
-Macro-F1 drop from the clean reference
+Robustness Drop
+=
+Clean Performance
+-
+Perturbed Performance
 ```
 
-Pearson and Spearman correlations are reported separately for MFCC and YAMNet.
+we will mianly study that the changes in classification performance as the degree of disturbance increases.
 
-Class-level representation shift is also joined with class-level recall drop.
+This project will further analysis:
 
----
+Which environmental sound categories are particularly sensitive to different types of disturbances.
 
-## Class-level and confusion analysis
-
-The project reports per-class recall degradation under each perturbation. For the strongest severity in each family, the code also identifies the off-diagonal confusion whose count increased most relative to clean evaluation.
-
-For selected clean-correct / perturbed-incorrect examples, the code generates a diagnostic figure containing:
-
-- waveform;
-- spectrum;
-- spectrogram;
-- MFCC representation;
-
-for both clean and perturbed versions of the same clip.
+Confusion matrices, waveforms, spectra, spectrograms and MFCC representations will be used to help explain significant classification errors.
 
 ---
 
-## Repository structure
+## Representation Change
+
+This project will also study that:
+
+When the category to which the sound itself belongs remains unchanged but the recording conditions change, how much has the audio representation itself changed.
+
+For MFCC features, we can measure them by the distance between the clean feature summary and perturbed feature summary.
+
+For YAMNet embeddings, we can use cosine distance to compare the clean representation with perturbed representation.
+
+Then, we will futher compare:
+
+```text
+Representation Shift
+        ↓
+Classification Performance Loss
+```
+
+By simple correlation analysis, we can study whether bigger representation change is related to the decrease of bigger Macro-F1.
+
+---
+
+## Current progress
+
+- [x] UrbanSound8K dataset preparation
+- [x] Metadata loading
+- [x] Dataset inspection
+- [x] Audio preprocessing
+- [x] Waveform / spectrum / spectrogram analysis
+- [x] MFCC extraction
+- [x] MFCC + SVM baseline
+- [x] Pretrained YAMNet setup
+- [x] Frozen YAMNet embedding extraction
+- [x] YAMNet + SVM classification
+- [x] Official 10-fold evaluation
+- [x] Clean Accuracy evaluation
+- [x] Clean Macro-F1 evaluation
+- [x] Per-class Recall
+- [x] Confusion Matrix
+- [x] Mean ± Standard Deviation across folds
+- [x] Reproducibility setup
+- [x] Fixed random seed
+- [x] Experiment manifest generation
+- [x] Clip-level identifier tracking
+- [ ] Background-noise robustness
+- [ ] Reverberation robustness
+- [ ] Channel-distortion robustness
+- [ ] Representation-distance analysis
+- [ ] Representation-shift / performance correlation
+
+---
+
+## Repository Structure
 
 ```text
 code/
@@ -160,37 +356,84 @@ code/
 ├── plots/
 └── utils/
 
-assets/
-└── noise/
-    └── README.txt
-
 results/
-├── tables/
 ├── figures/
+├── tables/
 ├── cache/
-├── robustness/
 ├── representation/
-└── reproducibility/
+├── reproducibility/
+└── robustness/
 ```
+
+cache: local feature caches, not uploaded
+representation: reserved for representation-shift analysis
+reproducibility: experiment manifest
+robustness: future noise/reverb/channel results
 
 ---
 
-## Setup and reproduction
+## MATLAB Requirements
 
-### 1. Download UrbanSound8K
+Current project use the MATLAB to implement.
 
-Download and extract UrbanSound8K, then place the `UrbanSound8K` folder either **inside the repository** or **one directory above it**.
+The project requires the following relevant functions in Toolbox:
 
-Recommended structure:
+- Audio Toolbox
+- Signal Processing Toolbox
+- Statistics and Machine Learning Toolbox
+- Deep Learning Toolbox
+
+At the same time, TAMNet feature extraction needs to install pretrained YAMNet support model.
+
+The relevent MATLAB resources:
+
+[Audio Toolbox Pretrained Models](https://www.mathworks.com/help/audio/pretrained-models.html)
+
+[Transfer Learning with Pretrained Audio Networks](https://www.mathworks.com/help/audio/ug/transfer-learning-with-pretrained-audio-networks.html)
+
+---
+## Reproducibility
+
+This will be implemented using a fixed random seed and will store the general experimental setting.
+
+The information in the automatically generated reproducibility manifest will include information like:
+
+- MATLAB release;
+- toolbox information;
+- preprocessing settings;
+- MFCC parameters;
+- SVM parameters;
+- YAMNet loading information.
+
+Identifiers are also stored in the feature and prediction output files to allow for matching of clean and perturbed versions of the same recording in subsequent robustness analyses.
+
+---
+
+## Experimental reproduction instructions
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/ysha0293/elec5305-project-530087661.git
+```
+
+### 2. Download UrbanSound8K
+
+Dataset download address:
+[UrbanSound8K Dataset - Zenodo](https://zenodo.org/records/1203745)
+
+After downloading and extracting the UrbanSound8K dataset, place the UrbanSound8K folder in the project root directory, at the same level as the code and results folders.
+
+The expected structure is as follows:
 
 ```text
-elec5305-project-530087661/
+project/
 ├── code/
-├── assets/
 ├── results/
 ├── UrbanSound8K/
 │   ├── audio/
 │   │   ├── fold1/
+│   │   ├── fold2/
 │   │   ├── ...
 │   │   └── fold10/
 │   └── metadata/
@@ -198,157 +441,106 @@ elec5305-project-530087661/
 └── README.md
 ```
 
-The code also supports the user's current local structure:
+### 3. Install YAMNet Support Model
 
-```text
-project/
-├── UrbanSound8K/
-└── elec5305-project-530087661/
+The implementation automatically checks whether pretrained YAMNet is available. If it is already available in MATLAB, it is loaded directly. Otherwise, the project loader attempts to prepare the model automatically.
+
+we can pass the testing by following codes:
+
+```matlab
+[net,classes] = audioPretrainedNetwork("yamnet");
 ```
 
-### 2. Add the external environmental-noise bank
-
-Before the formal noise robustness experiment, place one or more **unrelated external environmental-noise recordings** in:
-
-```text
-assets/noise/
-```
-
-Supported formats are WAV, FLAC, MP3 and M4A. Do not use UrbanSound8K evaluation clips as the noise bank. Record the source/license of the noise recordings in the final report.
-
-### 3. MATLAB requirements
-
-- Audio Toolbox
-- Signal Processing Toolbox
-- Statistics and Machine Learning Toolbox
-- Deep Learning Toolbox
-- pretrained YAMNet support
-
-The project automatically checks/loads YAMNet using the MATLAB installation or the project-local model helper.
-
-### 4. Run the setup check first
-
-From MATLAB:
+### 4. Run the Setup Check
 
 ```matlab
 cd code
 test_setup
 ```
 
-This checks the dataset, official folds, required functions, YAMNet, the external noise bank and deterministic perturbation generation.
+This command will check:
 
-### 5. Run the complete experiment
+- dataset paths；
+- metadata；
+- official folds；
+- MATLAB required functions；
+- YAMNet availability。
+
+### 5. run the clean benchmark
 
 ```matlab
 main
 ```
 
-If the clean benchmark already exists, it is reused. On a fresh project copy, the clean benchmark is generated first.
+The experiment results will be saved into:
 
-The first robustness run trains and caches the ten clean-fold SVM models for MFCC and YAMNet. Noise, reverb and channel experiments then reuse those exact clean models; they do not retrain on perturbed data.
+```text
+results/tables/
+results/figures/
+```
 
 ---
 
-## Output structure
+## The following work
 
-The final version deliberately separates **report results** from **working caches**.
-Large per-clip feature matrices are not report deliverables and are therefore kept under `work/`, which is ignored by Git. After a fully successful run and integrity audit, large perturbed-feature caches are removed automatically.
+The following work mainly includes:
 
-Small condition-level metrics remain separated for clear analysis:
+1. Controlled background-noise experiment;
+2. reverberation Experiment;
+3. channel/frequency-response Experiment
+4. representation-distance analysis;
+5. correlation analysis between representation shift and classification degradation
+6. class-level robustness analysis.
 
-```text
-results/robustness/
-├── noise/
-│   ├── 20db/
-│   ├── 10db/
-│   └── 0db/
-├── reverb/
-│   ├── mild/
-│   ├── moderate/
-│   └── strong/
-└── channel/
-    ├── mild/
-    ├── moderate/
-    └── strong/
-```
+This project finally wants to determine:
 
-Each condition stores only compact fold metrics, summary statistics and per-class metrics for MFCC and YAMNet. Clip-level predictions and full perturbed feature matrices are used in memory for auditing/analysis but are not written to the final `results/` directory by default.
-
-Core report tables are:
-
-```text
-results/tables/clean_summary.csv
-results/tables/clean_fold_comparison.csv
-results/tables/clean_per_class_recall_comparison.csv
-results/tables/mfcc_aggregate_confusion.csv
-results/tables/yamnet_aggregate_confusion.csv
-results/tables/robustness_summary.csv
-results/tables/robustness_fold_metrics.csv
-results/tables/class_robustness.csv
-results/tables/confusion_change_summary.csv
-results/representation/condition_summary.csv
-results/representation/correlation.csv
-results/representation/class_shift_vs_recall_drop.csv
-```
-
-Core report figures are:
-
-```text
-results/figures/clean_accuracy_mean_std.png
-results/figures/clean_macro_f1_mean_std.png
-results/figures/clean_accuracy_fold_comparison.png
-results/figures/clean_macro_f1_fold_comparison.png
-results/figures/clean_per_class_recall_comparison.png
-results/figures/mfcc_aggregate_confusion.png
-results/figures/yamnet_aggregate_confusion.png
-results/figures/robustness_noise_macro_f1.png
-results/figures/robustness_reverb_macro_f1.png
-results/figures/robustness_channel_macro_f1.png
-results/figures/class_recall_drop_noise_strong.png
-results/figures/class_recall_drop_reverb_strong.png
-results/figures/class_recall_drop_channel_strong.png
-results/figures/representation_shift_vs_f1_drop_mfcc.png
-results/figures/representation_shift_vs_f1_drop_yamnet.png
-results/figures/confusion_*_strong_*.png
-results/figures/signal_example_*.png
-```
-
-The working directory is:
-
-```text
-work/
-├── cache/
-└── robustness_temp/
-```
-
-`work/` is not intended for submission. It exists only to support restartable and reproducible computation.
+Is the audio representation with the best classification performance under the clean condition also the most stable representation when the recording conditions change?
 
 ---
 
-## Reproducibility record
+## Project Documents
 
-`results/reproducibility/experiment_manifest.txt` records:
+[Project Proposal(project feedback 1) (PDF)](ELEC5305_Project_Proposal(Yunzhe%20Shao-530087661).pdf)
 
-- MATLAB release and platform;
-- random seed and RNG algorithm;
-- MFCC parameters;
-- SVM parameters;
-- YAMNet configuration;
-- noise SNR levels;
-- noise-file SHA-256 hashes;
-- reverb RT60 settings;
-- channel bandwidth settings;
-- dataset metadata path;
-- cache versions and experiment-control flags.
+## References and Resources
 
----
+1. J. Salamon, C. Jacoby, and J. P. Bello,  
+   *A Dataset and Taxonomy for Urban Sound Research*,  
+   Proceedings of the 22nd ACM International Conference on Multimedia, 2014.  
+   UrbanSound8K dataset: https://zenodo.org/records/1203745
 
-## References and resources
+2. K. J. Piczak,  
+   *Environmental Sound Classification with Convolutional Neural Networks*,  
+   2015 IEEE 25th International Workshop on Machine Learning for Signal Processing (MLSP), pp. 1–6, 2015.  
+   DOI: 10.1109/MLSP.2015.7324337
 
-1. J. Salamon, C. Jacoby, and J. P. Bello, *A Dataset and Taxonomy for Urban Sound Research*, ACM Multimedia, 2014.
-2. UrbanSound8K dataset: https://zenodo.org/records/1203745
-3. K. J. Piczak, *Environmental Sound Classification with Convolutional Neural Networks*, MLSP, 2015.
-4. J. F. Gemmeke et al., *Audio Set: An Ontology and Human-Labeled Dataset for Audio Events*, ICASSP, 2017.
-5. S. Srivastava et al., *A Study on Robustness to Perturbations for Representations of Environmental Sound*, EUSIPCO, 2022.
-6. MATLAB Audio Toolbox pretrained models: https://www.mathworks.com/help/audio/pretrained-models.html
-7. MATLAB transfer learning with pretrained audio networks: https://www.mathworks.com/help/audio/ug/transfer-learning-with-pretrained-audio-networks.html
+3. J. F. Gemmeke, D. P. W. Ellis, D. Freedman, A. Jansen, W. Lawrence,  
+   R. C. Moore, M. Plakal, and M. Ritter,  
+   *Audio Set: An Ontology and Human-Labeled Dataset for Audio Events*,  
+   2017 IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP), pp. 776–780, 2017.  
+   DOI: 10.1109/ICASSP.2017.7952261
+
+4. S. Srivastava, H.-H. Wu, J. Rulff, M. Fuentes, M. Cartwright,  
+   C. T. Silva, A. Arora, and J. P. Bello,  
+   *A Study on Robustness to Perturbations for Representations of Environmental Sound*,  
+   2022 30th European Signal Processing Conference (EUSIPCO), pp. 125–129, 2022.
+
+5. TensorFlow,  
+   *Sound Classification with YAMNet*,  
+   TensorFlow Hub Documentation.  
+   https://www.tensorflow.org/hub/tutorials/yamnet
+
+6. MathWorks,  
+   *Audio Toolbox Pretrained Models*,  
+   MATLAB Documentation.  
+   https://www.mathworks.com/help/audio/pretrained-models.html
+
+7. MathWorks,  
+   *Transfer Learning with Pretrained Audio Networks*,  
+   MATLAB Documentation.  
+   https://www.mathworks.com/help/audio/ug/transfer-learning-with-pretrained-audio-networks.html
+
+8. OpenL3,  
+   *Open-Source Deep Audio and Image Embeddings*,  
+   https://github.com/marl/openl3
+
