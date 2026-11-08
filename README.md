@@ -5,6 +5,10 @@ Student: Yunzhe Shao (SID: 530087661)
 
 **GitHub Pages:** [View Project Website](https://ysha0293.github.io/elec5305-project-530087661/)
 
+## Project Video
+
+[View Project Video](https://drive.google.com/file/d/1oTqImjyqKpDkdofGKj4SkjYRO1NiDER3/view?usp=drive_link)
+
 ## MFCCs versus Pretrained Audio Embeddings: Robustness of Environmental Sound Classification
 This project studies the classification of the environmental sound classification based on the Urbansound8K dataset
 
