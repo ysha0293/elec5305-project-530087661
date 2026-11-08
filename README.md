@@ -228,7 +228,7 @@ Current clean results indicate that the average classification performance of pr
 
 However, The main goal of this project is not to determine which method can achieve the highest clean accuracy.
 
-The next phase will futher study that When the recording conditions change, whether these audio representations still maintain reliable classification performance.
+The following robustness experiments further study that When the recording conditions change, whether these audio representations still maintain reliable classification performance.
 
 ---
 
@@ -254,20 +254,18 @@ The next phase will futher study that When the recording conditions change, whet
 
 ## The robustness experiment
 
-After building clean benchmark, the next phase evaluate the robustness of model under the different recording conditions.
+After building clean benchmark, the robustness of the models is evaluated under the different recording conditions.
 
 The classifer still uses the clean UrbanSound8K audio to train.
 
-Only held-out test recordings will be gradually added to the perturbation.
+Only held-out test recordings are gradually added to the perturbation.
 
 MFCC and YAMNet uses the same perturbed waveform under every interference condition, which can ensure the comparison conditions between the two representation methods are consistent.
 
 
 ### Background Noise
 
-Add controlled environmental noise with different SNR levels to the test audio.
-
-Initial plain uses:
+Controlled environmental noise is added to the held-out test audio at three SNR levels:
 
 - 20 dB SNR；
 - 10 dB SNR；
@@ -297,9 +295,53 @@ Use three bandwidth conditions:
 
 ---
 
+## Robustness Results
+
+### Background noise
+
+| Condition | MFCC Macro-F1 | YAMNet Macro-F1 |
+|---|---:|---:|
+| Clean | 0.6423 | 0.7918 |
+| 20 dB SNR | 0.6347 | 0.7914 |
+| 10 dB SNR | 0.6130 | 0.7896 |
+| 0 dB SNR | 0.5272 | 0.7711 |
+
+With the noise level increases, the classification performance of two representation  decreases. MFCC is more sensitive to the background noise. Under the 0 dB SNR condition, the Macro-F1 of MFCC drops from 0.6423 to 0.5272. YAMNet drops from0.7918 to 0.7711 and its difference is smaller.
+
+
+### Reverberation
+
+| Method | Clean Macro-F1 | Strong Reverberation Macro-F1 | Performance Drop |
+|---|---:|---:|---:|
+| MFCC + SVM | 0.6423 | 0.5982 | 0.0441 |
+| YAMNet + SVM | 0.7918 | 0.7479 | 0.0440 |
+
+Two representation method are all affected by the reverberation. The absolute classification performance of YAMNet is still higher, but under the strongest reverberation condition, the decrease of performance is almost same comparing to the clean condition. MFCC drops by 0.0441 and YAMNet drops by 0.0440.
+
+
+### Channel / Frequency-Response Distortion
+
+| Condition | MFCC Macro-F1 | YAMNet Macro-F1 |
+|---|---:|---:|
+| Clean | 0.6423 | 0.7918 |
+| Mild | 0.6260 | 0.7926 |
+| Moderate | 0.2857 | 0.7351 |
+| Strong | 0.1716 | 0.5969 |
+
+Channel distortion is the disturbance that causes the most obvious decline in classification performance in this experiment. Under the strongest condition, the Macro-F1 of MFCC drops from 0.6423 to 0.1716, and YAMNet drops from 0.7918 to 0.5969. Therefore, under the testing channel-distortion condition in this project, the performance of the YAMNet is more stable than the MFCC.
+
+
+
+More detail data result, category-level analysis, confusion matrix, and the correlation analysis between the representation shift and Macro-F1 degradation, please refer to the **Final Report**
+
+
+
+
+
+---
 ## Robustness analysis
 
-For each types of audio representation, we will compare the clean performance with perturbed performance.
+For each type of audio representation, we compare the clean performance with perturbed performance.
 
 The decline in robustness can be expressed as:
 
@@ -311,19 +353,19 @@ Clean Performance
 Perturbed Performance
 ```
 
-we will mianly study that the changes in classification performance as the degree of disturbance increases.
+we mainly study how the classification performance changes as the degree of disturbance increases.
 
-This project will further analysis:
+This project further analyses:
 
 Which environmental sound categories are particularly sensitive to different types of disturbances.
 
-Confusion matrices, waveforms, spectra, spectrograms and MFCC representations will be used to help explain significant classification errors.
+Confusion matrices, waveforms, spectra, spectrograms and MFCC representations are used to help explain significant classification errors.
 
 ---
 
 ## Representation Change
 
-This project will also study that:
+This project also studies that:
 
 When the category to which the sound itself belongs remains unchanged but the recording conditions change, how much has the audio representation itself changed.
 
@@ -331,7 +373,7 @@ For MFCC features, we can measure them by the distance between the clean feature
 
 For YAMNet embeddings, we can use cosine distance to compare the clean representation with perturbed representation.
 
-Then, we will futher compare:
+Then, we further compare:
 
 ```text
 Representation Shift
@@ -339,7 +381,7 @@ Representation Shift
 Classification Performance Loss
 ```
 
-By simple correlation analysis, we can study whether bigger representation change is related to the decrease of bigger Macro-F1.
+By simple correlation analysis, we study whether a bigger representation change is related to a bigger decrease in Macro-F1.
 
 ---
 
@@ -375,7 +417,6 @@ By simple correlation analysis, we can study whether bigger representation chang
 
 ## Repository Structure
 
-## Repository Structure
 
 ```text
 assets/
@@ -448,7 +489,7 @@ The relevent MATLAB resources:
 ---
 ## Reproducibility
 
-This will be implemented using a fixed random seed and will store the general experimental setting.
+This project uses a fixed random seed and stores the main experimental settings for reproducibility.
 
 The information in the automatically generated reproducibility manifest will include information like:
 
@@ -483,6 +524,7 @@ The expected structure is as follows:
 ```text
 project/
 ├── code/
+├── assert/
 ├── results/
 ├── UrbanSound8K/
 │   ├── audio/
@@ -520,7 +562,7 @@ This command will check:
 - MATLAB required functions；
 - YAMNet availability。
 
-### 5. run the clean benchmark
+### 5. Run the full experiment
 
 ```matlab
 main
@@ -531,30 +573,18 @@ The experiment results will be saved into:
 ```text
 results/tables/
 results/figures/
+results/robustness/
+results/representation/
+results/reproducibility/
 ```
 
 ---
 
-## The following work
 
-The following work mainly includes:
-
-1. Controlled background-noise experiment;
-2. reverberation Experiment;
-3. channel/frequency-response Experiment
-4. representation-distance analysis;
-5. correlation analysis between representation shift and classification degradation
-6. class-level robustness analysis.
-
-This project finally wants to determine:
-
-Is the audio representation with the best classification performance under the clean condition also the most stable representation when the recording conditions change?
-
----
 
 ## Project Documents
 
-[Project Proposal(project feedback 1) (PDF)](ELEC5305_Project_Proposal(Yunzhe%20Shao-530087661).pdf)
+[Project Proposal(project feedback 1) (PDF)](feedback/ELEC5305_Project_Proposal(Yunzhe%20Shao-530087661).pdf)
 
 ## References and Resources
 
