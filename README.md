@@ -512,19 +512,33 @@ Identifiers are also stored in the feature and prediction output files to allow 
 git clone https://github.com/ysha0293/elec5305-project-530087661.git
 ```
 
-### 2. Download UrbanSound8K
+### 2. Download UrbanSound8K and noise dataset
 
 Dataset download address:
 [UrbanSound8K Dataset - Zenodo](https://zenodo.org/records/1203745)
 
 After downloading and extracting the UrbanSound8K dataset, place the UrbanSound8K folder in the project root directory, at the same level as the code and results folders.
 
+The background-noise robustness experiment in this project uses the OOFFICE environment recording from the DEMAND dataset.
+
+The real noise document in this project has included in the Github repository, and the path is :
+
+`assets/noise/office.wav`
+
+Therefore, in order to reproduce this experiment, it is no necessary to download other file in the DEMAND official website (and download it and put it at the same level of UrbanSound8K dataset).
+
 The expected structure is as follows:
 
 ```text
 project/
+├── assets/
+│   └── noise/
+│       ├── office.wav
+│       ├── README.txt
+│       └── SOURCES.csv
 ├── code/
-├── assert/
+├── models/
+│   └── yamnet/
 ├── results/
 ├── UrbanSound8K/
 │   ├── audio/
@@ -585,6 +599,7 @@ results/reproducibility/
 ## Project Documents
 
 [Project Proposal(project feedback 1) (PDF)](feedback/ELEC5305_Project_Proposal(Yunzhe%20Shao-530087661).pdf)
+[Project Feedback 2 (PDF)](ELEC5305_Feedback2_Yunzhe_Shao.pdf)
 
 ## References and Resources
 
