@@ -80,7 +80,7 @@ The background-noise robustness experiment in this project uses the OOFFICE envi
 
 The real noise document in this project has included in the Github repository, and the path is :
 
-`assets/noise/office.wav`
+`asset/noise/office.wav`
 
 Therefore, in order to reproduce this experiment, it is no necessary to download other file in the DEMAND official website (and download it and put it at the same level of UrbanSound8K dataset).
 
@@ -523,7 +523,7 @@ The background-noise robustness experiment in this project uses the OOFFICE envi
 
 The real noise document in this project has included in the Github repository, and the path is :
 
-`assets/noise/office.wav`
+`asset/noise/office.wav`
 
 Therefore, in order to reproduce this experiment, it is no necessary to download other file in the DEMAND official website (and download it and put it at the same level of UrbanSound8K dataset).
 
@@ -591,6 +591,10 @@ results/robustness/
 results/representation/
 results/reproducibility/
 ```
+
+After the reproduction is successful, 'ALL CHECKS PASSED' will be appeared in the command window.
+
+
 
 ---
 
