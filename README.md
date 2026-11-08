@@ -608,8 +608,11 @@ After the reproduction is successful, 'ALL CHECKS PASSED' will be appeared in th
 
 ## Project Documents
 
-[Project Proposal(project feedback 1) (PDF)](feedback/ELEC5305_Project_Proposal(Yunzhe%20Shao-530087661).pdf)
+[Project Proposal (Project Feedback 1) (PDF)](feedback/ELEC5305_Project_Proposal(Yunzhe%20Shao-530087661).pdf)
+
 [Project Feedback 2 (PDF)](ELEC5305_Feedback2_Yunzhe_Shao.pdf)
+
+[Final Project Report (PDF)](report/ELEC5305_Final_project_report_Yunzhe_Shao.pdf)
 
 ## References and Resources
 
